@@ -40,15 +40,19 @@ for BUILDPACK in $(cat $1/.buildpacks); do
 
     # we'll get errors later if these are needed and don't exist
     chmod -f +x $dir/bin/{detect,compile,release} || true
+    chmod -f +x $dir/profile || true
 
     framework=$($dir/bin/detect $1)
 
     if [ $? == 0 ]; then
-      echo "=====> Detected Framework: $framework"
       $dir/bin/compile $1 $2 $3
 
       if [ $? != 0 ]; then
         exit 1
+      fi
+      
+      if [ -x $dir/profile ]; then
+        source $dir/profile
       fi
 
       if [ -x $dir/bin/release ]; then
