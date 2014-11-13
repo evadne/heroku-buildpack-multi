@@ -54,6 +54,13 @@ for BUILDPACK in $(cat $1/.buildpacks); do
       if [ -x $dir/profile ]; then
         source $dir/profile
       fi
+      
+      if [[ -d $1/.profile.d ]]; then
+        for file in $1/.profile.d/*; do
+          echo "sourcing $file"
+        	source $file
+        done
+      fi
 
       if [ -x $dir/bin/release ]; then
         $dir/bin/release $1 > $1/last_pack_release.out
